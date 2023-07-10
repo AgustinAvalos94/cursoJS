@@ -89,11 +89,11 @@ function renderizar(arrayElementos){
         contenedorProducto.className ="col-12 col-md-6 col-lg-4"
 
         let tarjetaProducto = document.createElement("figure")
-        tarjetaProducto.className="d-flex justify-content-center"   
+        tarjetaProducto.className="d-flex col text-align-center align-self-center"   
         tarjetaProducto.innerHTML = `
             <figcaption>${producto.nombre}</figcaption>
             <img src=img/${producto.rutaImagen}>
-            <div><p>${"Modificar"}</p>
+            <div class="w-75 m-auto flex-column justify-content-center align-items-center text-center"><p>${"Detalles"}</p>
             <h3>Precio: $ ${producto.precio}</h3>
             <h4>Unidades disponibles: ${producto.stock}</h4>
             </div>
@@ -156,7 +156,7 @@ function renderizarCarrito(arrayElementos){
         tarjetaCarrito.innerHTML = `
             <figcaption>${producto.nombre}</figcaption>
             <img src=img/${producto.rutaImagen}>
-            <div><p>${"Modificar"}</p>
+            <div class="w-75 m-auto flex-column justify-content-center align-items-center text-center">
             <h3>Precio: $ ${producto.precio}</h3>
             <h4>Cantidad: ${producto.cantidad}</h4>
             </div>
