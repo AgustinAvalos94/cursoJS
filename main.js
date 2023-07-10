@@ -1,5 +1,7 @@
 //Defino una lista de productos inicial y verifico si no esá en local Storage, si hay recupero
 
+
+
 let productos = [
     {id:1, nombre:'Micropolar Alaskan', tipo:'Buzo', actividad:'Trekking', stock: 7, precio: 20000, tec:'BearTech', rutaImagen: "micropolar.jfif",},
     {id:2, nombre:'Rompevientos North-wind', tipo:'Campera', actividad:'Trekking', stock: 4, precio: 25000, tec:'NoMoreWind', rutaImagen: "softshell.jfif",},
@@ -58,7 +60,7 @@ button.addEventListener("click", () => filtrarYRenderizar(productos,input.value)
 
 
 
-
+renderizar(productos)
 
 //Función filtrar x actividad mediante boton
 function filtrarActividad(e) {
