@@ -252,6 +252,10 @@ footer svg {
 
 #carritoButton {}
 
+#vaciarCarrito {}
+
+#comprarCarrito {}
+
 @media (max-width: 992px) {
     h1 {
         font-size: 2.3em;
