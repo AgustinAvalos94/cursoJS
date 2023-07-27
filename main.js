@@ -160,10 +160,12 @@ function agregarCarrito(e) {
             }
         }
     } else {
-        Toastify.error("Lo sentimos, no tenemos más stock de este producto", {
-            position: "center",
-            duration: 3000 // 3 segundos
-        });
+        let msg = {
+            text:"Lo sentimos, no tenemos más stock de este producto",
+            duration: 3000,
+            position: "center"
+        }
+        Toastify(msg).showToast();
     }
 
 
@@ -282,7 +284,12 @@ function comprarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 
     renderizarCarrito(carrito);
-    Toastify.success(`¡Compra realizada! Total a pagar: $${totalAPagar}`, { position: "center" });
+    let msg = {
+        text: `¡Compra realizada! Total a pagar: $${totalAPagar}`,
+        duration: 3000,
+        position: "center"
+    }
+    Toastify(msg).showToast();
 }
 
 
