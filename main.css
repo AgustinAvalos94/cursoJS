@@ -41,7 +41,7 @@ p {
 }
 
 header {
-    background-image: url(../img/header.jpg);
+    background-image: url(./img/header.jpg);
     height: 320px;
 }
 
