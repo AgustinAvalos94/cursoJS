@@ -142,7 +142,6 @@ function agregarCarrito(e) {
             }
         }
     } else {
-        alert("Prueba")
         let msg = {
             text:"Lo sentimos, no tenemos más stock de este producto",
             duration: 3000,
