@@ -4,6 +4,8 @@ let productos = []
 cargarProductos()
     .then(data => {
         productos = data;
+        //paso los productos al localStorage
+        localStorage.setItem("productos", JSON.stringify(productos))
         console.log(productos)
         renderizar(productos)
 
@@ -120,7 +122,6 @@ function agregarCarrito(e) {
         productos[indice].stock -= 1
         localStorage.setItem("productos", JSON.stringify(productos))
         const productoExistente = carrito.find(producto => producto.id === productoBuscado.id);
-
         if (productoExistente) {
             productoExistente.cantidad += 1;
         } else {
@@ -132,25 +133,6 @@ function agregarCarrito(e) {
                 cantidad: 1
             });
         }
-
-        //ACTUALIZO EL STOCK DE PRODUCTOS MEDIANTE FETCH
-        fetch('productos.json', {
-            method: 'PUT',
-            body: JSON.stringify(productos),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('La solicitud no fue exitosa al actualizar el stock');
-                }
-                return response.json();
-            })
-            .catch(error => {
-                console.error('Error al actualizar el stock:', error);
-            });
-
         const tarjetaProducto = e.target.parentElement;
         const unidadesDisponibles = tarjetaProducto.querySelector("h4");
         if (unidadesDisponibles) {
@@ -167,15 +149,12 @@ function agregarCarrito(e) {
         }
         Toastify(msg).showToast();
     }
-
-
 }
 
 //Render de los productos que están en el carrito al apretar boton de carrito
 function renderizarCarrito(arrayElementos) {
     let contenedorPrincipal = document.getElementById("contenedorPrincipal");
     contenedorPrincipal.innerHTML = "";
-
     arrayElementos.forEach((producto) => {
         let contenedorCarrito = document.createElement("div");
         contenedorCarrito.className = "col-12 col-md-6 col-lg-4";
