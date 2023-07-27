@@ -2,63 +2,64 @@ let productos = []
 
 //Cargo los productos mediante FETCH
 cargarProductos()
-  .then(data => {
-    productos = data;
-    renderizar(productos)
-  })
-  .catch(error => {
-    console.error('Error al cargar los productos:', error);
-  });
+    .then(data => {
+        productos = data;
+        console.log(productos)
+        renderizar(productos)
 
+        //Creo botones para filtrar luego por actividad
+        let actividades = []
+        productos.forEach(producto => {
+            if (!actividades.includes(producto.actividad)) {
+                actividades.push(producto.actividad)
+            }
+        })
+        let actividadesContainer = document.createElement("div");
+        actividadesContainer.className = "d-inline-flex justify-content-around"
+        let main = document.querySelector(".actions");
+        main.appendChild(actividadesContainer);
+        for (const actividad of actividades) {
+            actividadesContainer.innerHTML += `<button class="botonFiltro me-2 btn btn-primary" value="${actividad}">${actividad}</button>`
+        }
+        //Capturo los botones de filtro
+        let botonesFiltro = document.getElementsByClassName("botonFiltro")
+        //Evento de click de botones filtro
+        for (const boton of botonesFiltro) {
+            boton.addEventListener("click", filtrarActividad)
+        }
+    })
+    .catch(error => {
+        console.error('Error al cargar los productos:', error);
+    });
 
 //Defino Carrito y verifico si hay carrito en local Storage
+console.log(productos)
 let carrito = []
 let carritoJSON = JSON.parse(localStorage.getItem("carrito"))
-if (carritoJSON){
+if (carritoJSON) {
     carrito = carritoJSON
 }
 
-//Creo botones para filtrar luego por actividad
-let actividades = []
 
-productos.forEach (producto => {
-    if (!actividades.includes(producto.actividad)){
-        actividades.push(producto.actividad)
-    }
-})
 
-let actividadesContainer = document.createElement("div");
-actividadesContainer.className="d-inline-flex justify-content-around"
-let main = document.querySelector(".actions");
-main.appendChild(actividadesContainer);
 
-for (const actividad of actividades){
-    actividadesContainer.innerHTML += `<button class="botonFiltro me-2 btn btn-primary" value="${actividad}">${actividad}</button>`
-}
 
 
 //Los elementos que Capturo
 let input = document.getElementById("buscadorInput")
-let button= document.getElementById("buscadorButton")
-let mostrarCarrito= document.getElementById("carritoButton")
+let button = document.getElementById("buscadorButton")
+let mostrarCarrito = document.getElementById("carritoButton")
 
-let botonesFiltro = document.getElementsByClassName("botonFiltro")
+
 
 //Los eventos
-for (const boton of botonesFiltro){
-    boton.addEventListener("click", filtrarActividad)
-}
 
 
 carritoButton.addEventListener("click", () => {
     renderizarCarrito(carrito);
     mostrarOcultarBotonesCarrito();
 });
-button.addEventListener("click", () => filtrarYRenderizar(productos,input.value.toLowerCase()))
-
-
-
-
+button.addEventListener("click", () => filtrarYRenderizar(productos, input.value.toLowerCase()))
 
 renderizar(productos)
 
@@ -84,16 +85,16 @@ function filtrarYRenderizar(productos, keyWord) {
 }
 
 //Render de productos filtrados
-function renderizar(arrayElementos){
+function renderizar(arrayElementos) {
     let contenedorPrincipal = document.getElementById("contenedorPrincipal")
-    contenedorPrincipal.innerHTML= ""
-    
+    contenedorPrincipal.innerHTML = ""
+
     arrayElementos.forEach(producto => {
         let contenedorProducto = document.createElement("div")
-        contenedorProducto.className ="col-12 col-md-6 col-lg-4"
+        contenedorProducto.className = "col-12 col-md-6 col-lg-4"
 
         let tarjetaProducto = document.createElement("figure")
-        tarjetaProducto.className="d-flex col text-align-center align-self-center"   
+        tarjetaProducto.className = "d-flex col text-align-center align-self-center"
         tarjetaProducto.innerHTML = `
             <figcaption>${producto.nombre}</figcaption>
             <img src=img/${producto.rutaImagen}>
@@ -112,12 +113,12 @@ function renderizar(arrayElementos){
 }
 
 //Función que agrega un producto al carrito, o aumenta en 1 la cantidad de un producto existente
-function agregarCarrito(e){
+function agregarCarrito(e) {
     let productoBuscado = productos.find(producto => producto.id === Number(e.target.id))
-    if (productoBuscado.stock != 0){
+    if (productoBuscado.stock != 0) {
         let indice = productos.findIndex(producto => producto.id === Number(e.target.id))
         productos[indice].stock -= 1
-        localStorage.setItem("productos",JSON.stringify(productos))
+        localStorage.setItem("productos", JSON.stringify(productos))
         const productoExistente = carrito.find(producto => producto.id === productoBuscado.id);
 
         if (productoExistente) {
@@ -130,25 +131,25 @@ function agregarCarrito(e){
                 rutaImagen: productoBuscado.rutaImagen,
                 cantidad: 1
             });
-            }
+        }
 
-            //ACTUALIZO EL STOCK DE PRODUCTOS MEDIANTE FETCH
-            fetch('productos.json', {
-                method: 'PUT', 
-                body: JSON.stringify(productos), 
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              })
-              .then(response => {
+        //ACTUALIZO EL STOCK DE PRODUCTOS MEDIANTE FETCH
+        fetch('productos.json', {
+            method: 'PUT',
+            body: JSON.stringify(productos),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
                 if (!response.ok) {
-                  throw new Error('La solicitud no fue exitosa al actualizar el stock');
+                    throw new Error('La solicitud no fue exitosa al actualizar el stock');
                 }
                 return response.json();
-              })
-              .catch(error => {
+            })
+            .catch(error => {
                 console.error('Error al actualizar el stock:', error);
-              });
+            });
 
         const tarjetaProducto = e.target.parentElement;
         const unidadesDisponibles = tarjetaProducto.querySelector("h4");
@@ -158,11 +159,14 @@ function agregarCarrito(e){
                 unidadesDisponibles.textContent = "Sin stock";
             }
         }
-    }else{
-        alert("Lo sentimos, no tenemos más stock de este producto")
+    } else {
+        Toastify.error("Lo sentimos, no tenemos más stock de este producto", {
+            position: "center",
+            duration: 3000 // 3 segundos
+        });
     }
-    
-    
+
+
 }
 
 //Render de los productos que están en el carrito al apretar boton de carrito
@@ -278,7 +282,7 @@ function comprarCarrito() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 
     renderizarCarrito(carrito);
-    alert(`¡Compra realizada! Total a pagar: $${totalAPagar}`);
+    Toastify.success(`¡Compra realizada! Total a pagar: $${totalAPagar}`, { position: "center" });
 }
 
 
@@ -286,17 +290,17 @@ function comprarCarrito() {
 
 function cargarProductos() {
     return fetch('productos.json')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('La solicitud no fue exitosa');
-        }
-        return response.json();
-      })
-      .catch(error => {
-        console.error('Error al obtener los datos de productos:', error);
-        throw error;
-      });
-  }
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('La solicitud no fue exitosa');
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos de productos:', error);
+            throw error;
+        });
+}
 
 
 
